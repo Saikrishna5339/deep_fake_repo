@@ -1,11 +1,12 @@
 import os
 import cv2
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, Subset
 from torchvision import transforms
 import albumentations as A
 from PIL import Image
 import numpy as np
+import random
 
 class DeepfakeDataset(Dataset):
     def __init__(self, root_dir, transform=None, is_train=True):
@@ -14,8 +15,8 @@ class DeepfakeDataset(Dataset):
         self.transform = transform
         
         # Define paths for real and fake data
-        self.real_dir = os.path.join(root_dir, 'real')
-        self.fake_dir = os.path.join(root_dir, 'fake')
+        self.real_dir = os.path.join(root_dir, 'training_real')
+        self.fake_dir = os.path.join(root_dir, 'training_fake')
         
         # Get all image paths and labels
         self.image_paths = []
@@ -68,17 +69,32 @@ def get_transforms(is_train=True):
         ])
 
 def create_data_loaders(train_dir, val_dir, batch_size=32):
-    # Create datasets
-    train_dataset = DeepfakeDataset(
+    # Create a single dataset
+    full_dataset = DeepfakeDataset(
         train_dir,
-        transform=get_transforms(is_train=True),
+        transform=None,  # No transforms applied yet
         is_train=True
     )
     
-    val_dataset = DeepfakeDataset(
-        val_dir,
-        transform=get_transforms(is_train=False),
-        is_train=False
+    # Determine indices for train and validation splits
+    dataset_size = len(full_dataset)
+    indices = list(range(dataset_size))
+    random.shuffle(indices)  # Shuffle the indices
+    
+    split = int(0.8 * dataset_size)  # 80% for training, 20% for validation
+    train_indices, val_indices = indices[:split], indices[split:]
+    
+    # Create train and validation subsets
+    train_dataset = SubsetTransformDataset(
+        full_dataset, 
+        train_indices,
+        transform=get_transforms(is_train=True)
+    )
+    
+    val_dataset = SubsetTransformDataset(
+        full_dataset, 
+        val_indices,
+        transform=get_transforms(is_train=False)
     )
     
     # Create data loaders
@@ -100,6 +116,31 @@ def create_data_loaders(train_dir, val_dir, batch_size=32):
     
     return train_loader, val_loader
 
+class SubsetTransformDataset(Dataset):
+    """Subset of a dataset with custom transforms applied"""
+    def __init__(self, dataset, indices, transform=None):
+        self.dataset = dataset
+        self.indices = indices
+        self.transform = transform
+        
+    def __getitem__(self, idx):
+        img_path = self.dataset.image_paths[self.indices[idx]]
+        label = self.dataset.labels[self.indices[idx]]
+        
+        # Read image
+        image = cv2.imread(img_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+        # Apply transforms if any
+        if self.transform:
+            transformed = self.transform(image=image)
+            image = transformed['image']
+        
+        return image, label
+    
+    def __len__(self):
+        return len(self.indices)
+
 class VideoDataset(Dataset):
     def __init__(self, root_dir, transform=None, is_train=True):
         self.root_dir = root_dir
@@ -107,8 +148,8 @@ class VideoDataset(Dataset):
         self.transform = transform
         
         # Define paths for real and fake videos
-        self.real_dir = os.path.join(root_dir, 'real')
-        self.fake_dir = os.path.join(root_dir, 'fake')
+        self.real_dir = os.path.join(root_dir, 'training_real')
+        self.fake_dir = os.path.join(root_dir, 'training_fake')
         
         # Get all video paths and labels
         self.video_paths = []

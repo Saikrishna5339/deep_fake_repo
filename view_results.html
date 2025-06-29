@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detection Model Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 40px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .visualization {
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .visualization img {
+            max-width: 100%;
+            height: auto;
+        }
+        p {
+            margin-top: 15px;
+            text-align: left;
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Deepfake Detection Model Comparison</h1>
+    
+    <div class="intro">
+        <p>This page presents a comprehensive comparison of different deepfake detection models: GenConViT, Swin Transformer, Vision Transformer (ViT), and MesoNet.</p>
+        <p>The visualizations below show various performance metrics and characteristics of these models to help evaluate their effectiveness for deepfake detection tasks.</p>
+    </div>
+
+    <h2>Training Performance</h2>
+    
+    <div class="grid-container">
+        <div class="visualization">
+            <h3>Accuracy vs. Epochs</h3>
+            <img src="visualizations/accuracy_vs_epochs.png" alt="Accuracy vs Epochs">
+            <p>This plot shows how the accuracy of each model improves during training across 50 epochs. GenConViT achieves the highest final accuracy, followed by Swin Transformer, ViT, and MesoNet.</p>
+        </div>
+
+        <div class="visualization">
+            <h3>Loss vs. Epochs</h3>
+            <img src="visualizations/loss_vs_epochs.png" alt="Loss vs Epochs">
+            <p>The training loss curves demonstrate how each model converges during training. Lower loss values indicate better model fit. GenConViT shows the fastest and most consistent decline in loss.</p>
+        </div>
+    </div>
+
+    <h2>Model Evaluation</h2>
+
+    <div class="visualization">
+        <h3>Confusion Matrices</h3>
+        <img src="visualizations/confusion_matrices.png" alt="Confusion Matrices">
+        <p>The confusion matrices visualize the classification performance of each model on test data. The matrices show the counts of true negatives (correctly identified real images), false positives (real images incorrectly classified as fake), false negatives (fake images incorrectly classified as real), and true positives (correctly identified fake images).</p>
+    </div>
+
+    <div class="grid-container">
+        <div class="visualization">
+            <h3>ROC Curves</h3>
+            <img src="visualizations/roc_curves.png" alt="ROC Curves">
+            <p>The Receiver Operating Characteristic (ROC) curves show the trade-off between true positive rate and false positive rate at different threshold settings. The Area Under the Curve (AUC) is a measure of model performance - higher values indicate better classification performance.</p>
+        </div>
+
+        <div class="visualization">
+            <h3>Precision-Recall Curve (GenConViT)</h3>
+            <img src="visualizations/precision_recall_curve.png" alt="Precision-Recall Curve for GenConViT">
+            <p>The precision-recall curve for GenConViT illustrates the trade-off between precision (percentage of positive identifications that are correct) and recall (percentage of actual positives that are identified correctly). This curve is particularly useful for evaluating model performance on imbalanced datasets.</p>
+        </div>
+    </div>
+
+    <h2>Model Comparison</h2>
+
+    <div class="visualization">
+        <h3>Performance Metrics Comparison</h3>
+        <img src="visualizations/model_comparison_bar.png" alt="Model Comparison Bar Graph">
+        <p>This bar graph compares all models across five key metrics: Accuracy, Precision, Recall, F1-Score, and AUC. GenConViT demonstrates superior performance across all metrics, while MesoNet shows the lowest overall performance despite being the smallest model.</p>
+    </div>
+
+    <div class="grid-container">
+        <div class="visualization">
+            <h3>Model Size vs. Performance</h3>
+            <img src="visualizations/parameter_count_vs_accuracy.png" alt="Parameter Count vs Accuracy">
+            <p>This scatter plot shows the relationship between model size (number of parameters in millions) and accuracy. GenConViT achieves high accuracy with a moderate parameter count, offering a good balance between performance and complexity. ViT has the most parameters but doesn't offer proportionally better performance.</p>
+        </div>
+
+        <div class="visualization">
+            <h3>Inference Speed Comparison</h3>
+            <img src="visualizations/inference_time_fps.png" alt="Inference Time and FPS Comparison">
+            <p>These bar charts compare the inference time per image (in milliseconds) and frames per second (FPS) for each model. MesoNet is the fastest due to its simplicity, while ViT is the slowest. GenConViT offers a reasonable balance between inference speed and detection performance.</p>
+        </div>
+    </div>
+
+    <h2>Conclusion</h2>
+    <div>
+        <p>Based on the comprehensive evaluation presented above, GenConViT demonstrates the best overall performance for deepfake detection, with:</p>
+        <ul>
+            <li>Highest accuracy, precision, recall, F1-score, and AUC</li>
+            <li>Good balance between model complexity and performance</li>
+            <li>Reasonable inference speed suitable for most applications</li>
+        </ul>
+        <p>Swin Transformer offers competitive performance with slightly higher computational cost, while ViT provides good performance but with significantly higher parameter count. MesoNet is the simplest and fastest model but has lower detection performance compared to the others.</p>
+        <p>The choice of model would depend on the specific requirements of the application, balancing factors such as accuracy, computational resources, and inference speed.</p>
+    </div>
+</body>
+</html> 

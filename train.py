@@ -128,8 +128,8 @@ def main():
     
     # Create data loaders with smaller batch size
     train_loader, val_loader = create_data_loaders(
-        train_dir='data/train',
-        val_dir='data/val',
+        train_dir='data',
+        val_dir='data',  # Using same directory for validation
         batch_size=16  # Reduced from 32 to 16
     )
     
